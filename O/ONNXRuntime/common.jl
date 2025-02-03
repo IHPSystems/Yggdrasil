@@ -8,6 +8,7 @@ sources = AbstractSource[
 
 script = raw"""
 apk del cmake # Need CMake >= 3.26
+apk del python2 # Need Python >= 3.8
 
 cd $WORKSPACE/srcdir
 
@@ -28,19 +29,19 @@ if [[ $target != *-w64-mingw32* ]]; then
 
     cd onnxruntime
     git submodule update --init --recursive --depth 1 --jobs $nproc
-    mkdir build
-    cd build
     cmake \
+        -B build \
         -DCMAKE_INSTALL_PREFIX=$prefix \
         -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TARGET_TOOLCHAIN} \
         -DCMAKE_BUILD_TYPE=Release \
         -DONNX_CUSTOM_PROTOC_EXECUTABLE=$host_bindir/protoc \
         -Donnxruntime_BUILD_SHARED_LIB=ON \
         -Donnxruntime_BUILD_UNIT_TESTS=OFF \
+        -G Ninja \
         "${cmake_extra_args[@]}" \
         $WORKSPACE/srcdir/onnxruntime/cmake
-    make -j $nproc
-    make install
+    cmake --build build --parallel $nproc
+    cmake --install build
     install_license $WORKSPACE/srcdir/onnxruntime/LICENSE
 else
     if [[ $bb_full_target == *-cuda* ]]; then
@@ -79,6 +80,5 @@ products = Product[
 dependencies = AbstractDependency[
     HostBuildDependency(PackageSpec("protoc_jll", v"3.16.1")),
     HostBuildDependency("CMake_jll"), # Need CMake >= 3.26
-    HostBuildDependency("Python_jll"), # Need Python >= 3.10
 ]
 
