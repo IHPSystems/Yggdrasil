@@ -78,6 +78,7 @@ products = Product[
 
 dependencies = AbstractDependency[
     HostBuildDependency(PackageSpec("protoc_jll", v"3.16.1")),
-    HostBuildDependency(PackageSpec(name="CMake_jll")),  # Need CMake >= 3.26
+    HostBuildDependency("CMake_jll"), # Need CMake >= 3.26
+    HostBuildDependency("Python_jll"), # Need Python >= 3.10
 ]
 
