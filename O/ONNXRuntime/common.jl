@@ -7,6 +7,8 @@ sources = AbstractSource[
 ]
 
 script = raw"""
+apk del cmake # Need CMake >= 3.26
+
 cd $WORKSPACE/srcdir
 
 cuda_version=${bb_full_target##*-cuda+}
@@ -24,11 +26,6 @@ if [[ $target != *-w64-mingw32* ]]; then
         )
     fi
 
-    # Cross-compiling for aarch64-apple-darwin on x86_64 requires setting arch.: https://github.com/microsoft/onnxruntime/blob/v1.10.0/cmake/CMakeLists.txt#L186
-    if [[ $target == aarch64-apple-darwin* ]]; then
-        cmake_extra_args+=("-DCMAKE_OSX_ARCHITECTURES='arm64'")
-    fi
-
     cd onnxruntime
     git submodule update --init --recursive --depth 1 --jobs $nproc
     mkdir build
@@ -40,7 +37,6 @@ if [[ $target != *-w64-mingw32* ]]; then
         -DONNX_CUSTOM_PROTOC_EXECUTABLE=$host_bindir/protoc \
         -Donnxruntime_BUILD_SHARED_LIB=ON \
         -Donnxruntime_BUILD_UNIT_TESTS=OFF \
-        -Donnxruntime_DISABLE_RTTI=OFF \
         "${cmake_extra_args[@]}" \
         $WORKSPACE/srcdir/onnxruntime/cmake
     make -j $nproc
@@ -81,6 +77,7 @@ products = Product[
 ]
 
 dependencies = AbstractDependency[
-    HostBuildDependency(PackageSpec("protoc_jll", v"3.16.1"))
+    HostBuildDependency(PackageSpec("protoc_jll", v"3.16.1")),
+    HostBuildDependency(PackageSpec(name="CMake_jll")),  # Need CMake >= 3.26
 ]
 

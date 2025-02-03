@@ -13,16 +13,16 @@ version = v"1.20.1"
 # Cf. https://onnxruntime.ai/docs/execution-providers/TensorRT-ExecutionProvider.html#requirements
 # Cf. https://github.com/microsoft/onnxruntime/blob/v1.20.1/tools/ci_build/github/azure-pipelines/stages/py-cuda-packaging-stage.yml#L35
 cuda_versions = [
-    v"11.8",
-    v"12.2",
+    v"11",
+    v"12",
 ]
 
 cudnn_versions = Dict(
-    v"11.8" => v"8.y11",
-    v"12.2" => v"9.y12",
+    v"11" => v"8.9.5",
+    v"12" => v"9.7.0",
 )
 
-tensorrt_version = v"10.5.z"
+tensorrt_version = v"10.5.0"
 
 tensorrt_compat = string(tensorrt_version.major)
 
@@ -31,8 +31,6 @@ include(joinpath(@__DIR__, "..", "common.jl"))
 # Override the default sources
 append!(sources, [
     ArchiveSource("https://github.com/microsoft/onnxruntime/releases/download/v$version/onnxruntime-win-x64-gpu-$version.zip", "3e9658d4aa7c21b3f5cbb5a7ce0356184f3c183c317b52f9cfff23a3f079634e"; unpack_target="onnxruntime-x86_64-w64-mingw32-cuda"),
-    # aarch64-linux-gnu binaries for NVIDIA Jetson from NVIDIA-managed Jetson Zoo: https://elinux.org/Jetson_Zoo#ONNX_Runtime
-    FileSource("https://nvidia.box.com/shared/static/jy7nqva7l88mq9i8bw3g3sklzf4kccn2.whl", "a608b7a4a4fc6ad5c90d6005edbfe0851847b991b08aafff4549bbbbdb938bf6"; filename = "onnxruntime-aarch64-linux-gnu-cuda.whl"),
 ])
 
 # Override the default platforms
@@ -54,8 +52,9 @@ append!(dependencies, [
 builds = []
 for platform in platforms
     should_build_platform(platform) || continue
-    cudnn_version = cudnn_versions[platform["cuda"]]
-    additional_deps = append(
+    cuda_major_version = Base.thismajor(VersionNumber(platform["cuda"]))
+    cudnn_version = cudnn_versions[cuda_major_version]
+    additional_deps = append!(
         CUDA.required_dependencies(platform, static_sdk = true),
         [
             Dependency("CUDNN_jll"; compat = string(cudnn_version.major)),
