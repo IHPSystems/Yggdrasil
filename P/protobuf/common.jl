@@ -2,7 +2,7 @@ version = v"3.16.0"
 
 sources = [
     GitSource("https://github.com/protocolbuffers/protobuf.git", "2dc747c574b68a808ea4699d26942c8132fe2b09"),
-    DirectorySource("bundled"),
+    DirectorySource(joinpath(@__DIR__, "bundled")),
 ]
 
 script = raw"""
@@ -20,7 +20,7 @@ if [[ "$BUILD_SHARED_LIBS" == "OFF" ]]; then
 fi
 
 cmake \
-    -B build \
+    -B work \
     -G Ninja \
     -DBUILD_SHARED_LIBS=$BUILD_SHARED_LIBS \
     -DCMAKE_BUILD_TYPE=Release \
@@ -32,8 +32,8 @@ cmake \
     -Dprotobuf_BUILD_TESTS=OFF \
     ${cmake_extra_args[@]} \
     cmake
-cmake --build build --parallel ${nproc}
-cmake --install build
+cmake --build work --parallel ${nproc}
+cmake --install work
 install_license LICENSE
 """
 
