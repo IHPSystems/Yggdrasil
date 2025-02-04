@@ -28,7 +28,7 @@ cmake \
     -DCMAKE_FIND_ROOT_PATH=${prefix} \
     -DCMAKE_INSTALL_PREFIX=${prefix} \
     -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TARGET_TOOLCHAIN} \
-    -Dprotobuf_BUILD_LIBPROTOC=ON \
+    -Dprotobuf_BUILD_PROTOC_BINARIES=OFF \
     -Dprotobuf_BUILD_TESTS=OFF \
     ${cmake_extra_args[@]} \
     cmake

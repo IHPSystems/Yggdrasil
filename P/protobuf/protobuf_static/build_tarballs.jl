@@ -14,7 +14,6 @@ script
 products = [
     FileProduct("lib/libprotobuf.a", :libprotobuf_static),
     FileProduct("lib/libprotobuf-lite.a", :libprotobuf_lite_static),
-    FileProduct("lib/libprotoc.a", :libprotoc_static),
 ]
 
 build_tarballs(ARGS, name, version, sources, script, platforms, products, dependencies;

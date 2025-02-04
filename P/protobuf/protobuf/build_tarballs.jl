@@ -14,7 +14,6 @@ script
 products = [
     LibraryProduct("libprotobuf", :libprotobuf),
     LibraryProduct("libprotobuf-lite", :libprotobuf_lite),
-    LibraryProduct("libprotoc", :libprotoc),
 ]
 
 build_tarballs(ARGS, name, version, sources, script, platforms, products, dependencies;
