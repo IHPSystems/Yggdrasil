@@ -21,7 +21,8 @@ cat > /opt/bin/$bb_full_target/xcrun << EOF
 if [[ "\${@}" == *"--show-sdk-path"* ]]; then
    echo /opt/$target/$target/sys-root
 elif [[ "\${@}" == *"--show-sdk-version"* ]]; then
-   grep -A1 '<key>Version</key>' /opt/$target/$target/sys-root/SDKSettings.plist \
+   plistutil -f xml -i $sdk_root/SDKSettings.plist \
+   | grep -A1 '<key>Version</key>' \
    | tail -n1 \
    | sed -E -e 's/\s*<string>([^<]+)<\/string>\s*/\1/'
 else
