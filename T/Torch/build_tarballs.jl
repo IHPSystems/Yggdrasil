@@ -105,9 +105,9 @@ fi
 #     cmake_extra_args+=(-DUSE_PYTORCH_QNNPACK=OFF)
 # fi
 
-if [[ $target == aarch64-linux-gnu* # Disabled use of breakpad on aarch64-linux-gnu: Fails to build embedded breakpad library.
-#     || $target == *-w64-mingw32* # Disabling breakpad enables configure on Windows - in combination with pytorch-aten-qnnpack-cmake-windows.patch
-#     || $target == *-freebsd*
+if [[ $target == aarch64-linux-gnu* # Fails to build embedded breakpad library.
+    || $target == *-w64-mingw32* # Disabling breakpad enables configure on Windows - in combination with pytorch-aten-qnnpack-cmake-windows.patch
+    || $target == *-freebsd* # Fails to build embedded breakpad library
 ]]; then
     cmake_extra_args+=(-DUSE_BREAKPAD=OFF)
 else
