@@ -202,7 +202,7 @@ let cuda_platforms = CUDA.supported_platforms(min_version=v"10.2", max_version=v
     append!(platforms, cuda_platforms)
 end
 
-platforms = expand_cxxstring_abis(platforms)
+# platforms = expand_cxxstring_abis(platforms)
 
 openblas_platforms = filter(p -> arch(p) == "armv6l", platforms)
 libblastrampoline_platforms = filter(p -> p ∉ openblas_platforms, platforms)
