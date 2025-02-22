@@ -131,17 +131,16 @@ fi
     cmake_extra_args+=(-DUSE_SYSTEM_GLOO=ON)
 # fi
 
-if [[ $target == x86_64-apple-darwin* # Fails to compile: third_party/fbgemm/third_party/asmjit
-#     || $target == aarch64-* # A compiler with AVX512 support is required for FBGEM
-#     || $target == arm-* # A compiler with AVX512 support is required for FBGEM
-#     || $target == i686-* # x64 operating system is required for FBGEMM
-#     || $target == x86_64-w64-mingw32*
+if [[ 0 -eq 1
+    || $nbits != 64 # Quiets the CMake Warning: x64 operating system is required for FBGEMM
+    || $target != x86_64-* # Quiets the CMake Warning: A compiler with AVX512 support is required for FBGEMM
+    || $target == x86_64-apple-darwin* # Fails to compile: third_party/fbgemm/third_party/asmjit
+    # || $target == x86_64-w64-mingw32*
 ]]; then
     cmake_extra_args+=(-DUSE_FBGEMM=OFF -DUSE_FAKELOWP=OFF)
 fi
 
-# if [[ $target == x86_64-apple-darwin* # Fails to compile: third_party/ideep/mkl-dnn/src/cpu/x64/jit_avx512_core_amx_conv_kernel.cpp:483:43: error: use of undeclared identifier 'noU';
-#     || $target == *-w64-mingw32*
+# if [[ $target == *-w64-mingw32*
 #     || $target == *-linux-musl*
 # ]]; then
 #     cmake_extra_args+=(-DUSE_MKLDNN=OFF)
